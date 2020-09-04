@@ -15,7 +15,7 @@ after that you can run start.py and achieve server files yes.
 - .Pak files (contains filenames of server assets and game assets)
 - .m4a previews (Basically the preview songs you'd hear in the ingame song before purchasing a song)
 - .ogg music (Every song (BGM+SHOT) in the game including DLC and removed songs)
-- chart files (They include leveldata and filenames of the .mp3 so the program does parse them at util.getNamesFromChart())
+- chart files (They include leveldata and filenames of the .ogg music so the program does parse them at util.getNamesFromChart())
 
 **What it can't download yet:**
 
