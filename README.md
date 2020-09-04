@@ -1,6 +1,6 @@
 # gcm-downloader
 **Groove coaster mobile server downloader**
-
+![Thumbnail](https://user-images.githubusercontent.com/33218378/92287708-d7f39e00-ef0a-11ea-9960-5b3a019a0542.PNG)
 yes, to run this you need to have python 3 installed and 
 install dependencies by putting these lines in your command prompt or shell:
 ```batch
