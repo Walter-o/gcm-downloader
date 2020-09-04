@@ -1,0 +1,3 @@
+import app
+
+app.update()
