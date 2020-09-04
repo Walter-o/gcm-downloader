@@ -22,3 +22,8 @@ What it can't download yet:
 - Ads (The ad banners you can see at login page and in store, i have working code for this but i'll implement it into this project cleanly later)
 - Titles (The title-cards you can select as a player, again, i have working code, i'll implement soon)
 - All .pak files (The server still stores older pak files that could contain removed songs, will implement the option to use this later)
+
+Bro what is the password:
+
+All .zip files are encrypted by default with `eiprblFFv69R83J5`, i don't want to alter the data
+If you forget it somehow, you can find it again in util.ZIP_PASSWORD
