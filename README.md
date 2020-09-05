@@ -28,7 +28,7 @@ and achieve server files yes.
 
 - Ads (The ad banners you can see at login page and in store, i have working code for this but i'll implement it into this project cleanly later)
 - Titles (The title-cards you can select as a player, again, i have working code, i'll implement soon)
-- All .pak files (The server still stores older pak files that could contain removed songs, will implement the option to use this later)
+- All .pak files (9.3 million possible urls, i'll add a list of valid urls in this program once i am done bruteforcing)
 
 **Bro what is the password:**
 
