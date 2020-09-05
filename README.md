@@ -15,7 +15,7 @@ after that you can do
 ```batch
 python start.py
 ``` 
-and achieve server files yes.
+and achieve server files yes. 
 
 **What does it download:**
 
