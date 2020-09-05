@@ -33,5 +33,4 @@ and achieve server files yes.
 **Bro what is the password:**
 
 All .zip files are encrypted by default with **`eiprblFFv69R83J5`**, i don't want to alter the data.
-
 If you forget it somehow, you can find it again in util.ZIP_PASSWORD
