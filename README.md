@@ -6,9 +6,10 @@
 yes, to run this you need to have python 3 installed and 
 install dependencies by putting these lines in your command prompt or shell:
 ```batch
+pip install requests
 pip install pycryptodome
 pip install bs4
-pip install requests
+pip install lxml
 ```
 after that you can run start.py and achieve server files yes.
 
