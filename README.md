@@ -14,7 +14,11 @@ pip install lxml
 after that you can do 
 ```batch
 python start.py
-``` 
+```
+or if you for example want to use mode 1
+```batch
+python start.py 1
+```
 and achieve server files yes. 
 
 **What does it download:**
