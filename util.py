@@ -2,22 +2,24 @@
 # A Weapon to surpass Crypto Coaster
 
 from urllib.parse import urlencode, urlparse
+from datetime import timedelta, datetime
 from Crypto.Cipher import AES
 from bs4 import BeautifulSoup
 import requests
 import zipfile
+import json
 import os
 
 # Found in: mtxc::ObbFile::getZipPassword()
-# Used for: Decrypting zip files containing audio and chart data
+# Used for: Crypting zip files containing audio, chart data and .obb file
 ZIP_PASSWORD = b"eiprblFFv69R83J5"
 
 # Found in: aesManager::initialize()
-# Used for: Decrypting parameter bytes sent by client
+# Used for: Crypting parameter bytes sent by client
 AES_CBC_KEY = b"oLxvgCJjMzYijWIldgKLpUx5qhUhguP1"
 
 # Found in: aesManager::decryptCBC() and aesManager::encryptCBC()
-# Used for: Decrypting parameter bytes sent by client
+# Used for: Crypting parameter bytes sent by client
 AES_CBC_IV = b"6NrjyFU04IO9j9Yo"
 
 # Base parameters for doing requests to php
@@ -35,7 +37,11 @@ startUrl = "http://gc2018.gczero.com/start.php"
 musicUrl = "http://dl.sp-taitostation.com/ios/gc2/ogg/%s.ogg.zip"
 stageUrl = "http://dl.sp-taitostation.com/ios/gc2/stage/%s.zip"
 sampleUrl = "http://dl.sp-taitostation.com/ios/gc2/m4a/%s_sample.m4a"
+pakUrl = "http://dl.sp-taitostation.com/ios/gc2/%s"
 absPath = os.path.dirname(os.path.abspath(__file__))
+json404Path = os.path.join(absPath, "404.json")
+
+global list404 # List containing all 404'd urls
 
 # Turns a bytes object into an integer
 def hexint(bytesObj):
@@ -210,14 +216,24 @@ def serverRequest(url, updateParams=None):
 
 # Downloads given file
 def download(url):
-    print("downloading %s... " % url, end="")
-    r = requests.get(url)
-    if r.ok:
-        print("OK")
-        with open(convertPath(urlparse(url).path), "wb") as outFile:
-            outFile.write(r.content)
-    else:
-        print("FAIL", r.status_code)
+    if url in list404:
+        return
+    try:
+        print("Downloading", url, end="")
+        r = requests.get(url)
+        if r.ok:
+            print("OK")
+            with open(convertPath(urlparse(url).path), "wb") as outFile:
+                outFile.write(r.content)
+        elif r.status_code == 404:
+            print("404 banning...")
+            append404List([url])
+            return
+        else:
+            print("FAIL", r.status_code)
+    except Exception as error:
+        print("Error at download(%s): %s" % (url, error))
+        return download(url)
 
 # Download given file if it doesn't exist already
 def downloadIfNotExists(url):
@@ -244,18 +260,57 @@ def getDatsFromZip(stageZipName):
             datDatas.append(datFile.read())
     return datDatas
 
-# Downloads the newest pak urls
-def getNewPakUrls():
+# Opens stageparam.dat from newest tuneFile.pak
+def openStageParam(soup):
+    tuneFilePath = convertPath(urlparse(soup.find("tunefile_pak").find("url").text).path)
+    with open(os.path.join(absPath, "data", tuneFilePath), "rb") as tuneFile:
+        tuneFile = tuneFile.read()
+    stageParamData = decryptPak(tuneFile, onlyFiles=["stage_param.dat"])["stage_param.dat"]
+    return stageParamData
+
+# Returns BeautifulSoup object of start.php
+def getStartPhpSoup():
     r = serverRequest(startUrl)
     if r.ok:
-        soup = BeautifulSoup(r.text, "lxml")
-        paks = {
-            "tunePak": soup.find("tunefile_pak").find("url").text,
-            "modelPak": soup.find("model_pak").find("url").text,
-            "skinPak": soup.find("skin_pak").find("url").text
-        }
-        pakUrls = paks.values()
-        [downloadIfNotExists(url) for url in pakUrls]
+        return BeautifulSoup(r.text, "lxml")
     else:
-        raise Exception("Got statuscode %s for getNewPakUrls" % r.status_code)
-    return paks
+        raise Exception("Got statuscode %s for getStartPhpSoup()" % r.status_code)
+
+# Returns a list of dates between 2 given years,
+# e.g: 2019, 2020 returns 20190101 - 20201231
+def dateRange(sYear, eYear):
+    date = datetime(sYear, 1, 1)
+    day = timedelta(days=1)
+    dates = []
+    while True:
+        dates.append("%04d%02d%02d" % (date.year, date.month, date.day))
+        date += day
+        if date.year > eYear: break
+    return dates
+
+# Takes in a pak name and a single date entry from dateRange()
+# and returns all possible pak names for that date
+def generatePakNames(pakName, date):
+    return [pakName + date + "%02d%02d.pak" % (h, m)
+            for h in range(0, 24)
+            for m in range(0, 60)]
+
+# Loads the 404 urls list and creates it if it doesn't exist
+def load404List():
+    if not os.path.exists(json404Path):
+        with open(json404Path, "w") as init404:
+            json.dump({"404":[]}, init404)
+    with open(json404Path, "r") as json404Read:
+        return json.load(json404Read)["404"]
+
+# Appends given list to the 404 urls list
+def append404List(list404):
+    with open(json404Path, "r") as json404Read:
+        json404Read = json.load(json404Read)["404"]
+    with open(json404Path, "w") as json404Append:
+        json.dump({"404": json404Read + list404}, json404Append)
+
+# Reloads the 404 list that contains bad urls
+def reload404List():
+    global list404
+    list404 = load404List()
