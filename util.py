@@ -219,7 +219,7 @@ def download(url):
     if url in list404:
         return
     try:
-        print("Downloading", url, end="")
+        print("Downloading ", url, end="")
         r = requests.get(url)
         if r.ok:
             print("OK")

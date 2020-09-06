@@ -23,7 +23,15 @@ def downloadOldPaks():
 
 # Downloads all updated chart data
 def downloadChartUpdateData(soup):
-    pass
+    # Documentation on these
+    # Looks like these are chart *Updates* that the server instructs the
+    # client to update these files with these revisions. They are given
+    # by start.php and stored in the client inside TunePreferences.xml
+    stagePaks = soup.find_all("stage_pak")
+    stageNames = [stagePak.find("name").text + stagePak.find("date").text
+        for stagePak in stagePaks]
+    [util.downloadIfNotExists(util.stageUrl % stageName)
+     for stageName in stageNames]
 
 # Downloads all music previews
 def downloadPreviews(stageParamData):
@@ -58,8 +66,7 @@ def downloadAds():
     pass
 
 
-# TODO TunePreferences.xml somhow contains all names for overwrite songs
-#      Find out where they come from EDIT1: probably start.php
+
 
 def main(mode):
     # Get BeautifulSoup object of start.php
@@ -71,10 +78,12 @@ def main(mode):
     stageParamData = util.openStageParam(soup=soup)
     util.reload404List()
 
+    if mode == 0: # TODO delete this debug mode after done testing
+        downloadChartUpdateData(soup=soup)
     if mode >= 1:
         downloadPreviews(stageParamData=stageParamData)
         downloadChartData(stageParamData=stageParamData)
-        #downloadChartUpdateData(soup=soup)
+        downloadChartUpdateData(soup=soup)
         downloadMusic()
     if mode >= 2:
         downloadTitles()
