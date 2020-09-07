@@ -38,10 +38,19 @@ musicUrl = "http://dl.sp-taitostation.com/ios/gc2/ogg/%s.ogg.zip"
 stageUrl = "http://dl.sp-taitostation.com/ios/gc2/stage/%s.zip"
 sampleUrl = "http://dl.sp-taitostation.com/ios/gc2/m4a/%s_sample.m4a"
 pakUrl = "http://dl.sp-taitostation.com/ios/gc2/%s"
+titleUrl = "http://gc2018.gczero.com/img/title/%s"
+infoAdUrl = "http://gc2018.gczero.com/img/info/Info/%s"
+coverFlowAdUrl = "http://gc2018.gczero.com/img/web_shop/cover_flow/%s"
+
 absPath = os.path.dirname(os.path.abspath(__file__))
 json404Path = os.path.join(absPath, "404.json")
 
 global list404 # List containing all 404'd urls
+
+# Lists for bruteforcing Ads
+leadChars = ["a", "b", "c", "d", "e", "f", "g", "TOUHOU"]
+fileTypes = [".jpg", ".gif", ".png"]
+languages = ["_EN", "_JP", ""]
 
 # Turns a bytes object into an integer
 def hexint(bytesObj):
@@ -215,34 +224,37 @@ def serverRequest(url, updateParams=None):
     return r
 
 # Downloads given file
-def download(url):
-    if url in list404:
+def download(url, bruteForce=True):
+    if url in list404 and not bruteForce:
         return
     try:
-        print("Downloading ", url, end="")
+        if not bruteForce:
+            print("Downloading %s " % url, end="")
         r = requests.get(url)
         if r.ok:
             print("OK")
             with open(convertPath(urlparse(url).path), "wb") as outFile:
                 outFile.write(r.content)
         elif r.status_code == 404:
-            print("404 banning...")
-            append404List([url])
+            if not bruteForce:
+                print("404 banning...")
+                append404List([url])
             return
         else:
             print("FAIL", r.status_code)
+            return download(url)
     except Exception as error:
         print("Error at download(%s): %s" % (url, error))
         return download(url)
 
 # Download given file if it doesn't exist already
-def downloadIfNotExists(url):
+def downloadIfNotExists(url, **kwargs):
     filename = os.path.basename(url)
     folderName = os.path.dirname(convertPath(urlparse(url).path))
     if not os.path.exists(folderName):
         os.makedirs(folderName)
     if filename not in os.listdir(folderName):
-        download(url)
+        download(url, **kwargs)
 
 # Gives local file location when you give relative server path
 def convertPath(serverPath):
@@ -314,3 +326,5 @@ def append404List(list404):
 def reload404List():
     global list404
     list404 = load404List()
+
+reload404List()
