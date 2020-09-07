@@ -39,8 +39,8 @@ stageUrl = "http://dl.sp-taitostation.com/ios/gc2/stage/%s.zip"
 sampleUrl = "http://dl.sp-taitostation.com/ios/gc2/m4a/%s_sample.m4a"
 pakUrl = "http://dl.sp-taitostation.com/ios/gc2/%s"
 titleUrl = "http://gc2018.gczero.com/img/title/%s"
-infoAdUrl = "http://gc2018.gczero.com/img/info/Info/%s"
-coverFlowAdUrl = "http://gc2018.gczero.com/img/web_shop/cover_flow/%s"
+infoAdUrl = "http://gc2018.gczero.com/img/info/Info%s"
+coverFlowAdUrl = "http://gc2018.gczero.com/img/web_shop/cover_flow%s"
 
 absPath = os.path.dirname(os.path.abspath(__file__))
 json404Path = os.path.join(absPath, "404.json")
@@ -232,7 +232,8 @@ def download(url, bruteForce=True):
             print("Downloading %s " % url, end="")
         r = requests.get(url)
         if r.ok:
-            print("OK")
+            if not bruteForce:
+                print("OK")
             with open(convertPath(urlparse(url).path), "wb") as outFile:
                 outFile.write(r.content)
         elif r.status_code == 404:
