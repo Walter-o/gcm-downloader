@@ -61,9 +61,10 @@ def downloadMusic():
 def downloadTitles():
     titleUrls = [
         util.titleUrl % "t%04d%04d_e.png" % (title, variation)
-        for title in range(0, 100 + 1)  # 24 was last title as of 2019/10/25
+        for title in range(1, 50 + 1)  # 24 was last title as of 2019/10/25
         for variation in range(0, 200 + 1)  # Highest variation was 78
-    ]
+    ] + [ util.titleUrl % "t%08d_e.png" % title
+          for title in range(10000)]
     print("Alright we're bruteforcing %s title urls" % len(titleUrls))
     with multiprocessing.Pool(processes=50) as pool:
         pool.map(util.downloadIfNotExists, titleUrls)
@@ -73,7 +74,7 @@ def downloadTitles():
 def downloadAds():
     dates = util.dateRange(2015, util.datetime.now().year)
     links = [
-        url % date + leadChar + language + fileType
+        url % (date + leadChar + language + fileType)
         for date in dates
         for leadChar in util.leadChars
         for language in util.languages
@@ -92,19 +93,19 @@ def main(mode):
     downloadNewPaks(soup=soup)
     stageParamData = util.openStageParam(soup=soup)
 
-    if mode == 0:
+    if "0" in mode:
         downloadAds()
-    if mode == 1:
+    if "1" in mode:
         downloadPreviews(stageParamData=stageParamData)
         downloadChartData(stageParamData=stageParamData)
         downloadChartUpdateData(soup=soup)
         downloadMusic()
-    if mode == 2:
+    if "2" in mode:
         downloadTitles()
         downloadAds()
-    if mode == 3:
+    if "3" in mode:
         downloadOldPaks()
-    if mode == 4:
+    if "4" in mode:
         downloadRecursive()
 
 
@@ -119,8 +120,8 @@ def CLI():
     #print("4 = Scanning every old pak file in /data/ for downloads")
     while True:
         choice = input("> ")
-        if choice.isdigit() and int(choice) in range(0, 4+1):
-            main(mode=int(choice))
+        if choice.isdigit():
+            main(mode=str(choice))
             print("Enjoy your files!")
             break
         else:

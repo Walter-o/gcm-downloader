@@ -50,7 +50,7 @@ global list404 # List containing all 404'd urls
 # Lists for bruteforcing Ads
 leadChars = ["a", "b", "c", "d", "e", "f", "g", "TOUHOU"]
 fileTypes = [".jpg", ".gif", ".png"]
-languages = ["_EN", "_JP", ""]
+languages = ["_EN", "_JP", "_en", "_jp", ""]
 
 # Turns a bytes object into an integer
 def hexint(bytesObj):
