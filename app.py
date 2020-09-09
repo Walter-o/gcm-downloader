@@ -27,13 +27,13 @@ def downloadRecursive():
         with open(tuneFilePak, "rb") as tuneFileData:
             stageParams.append(util.decryptPak(pakFile=tuneFileData.read(), onlyFiles=["stage_param.dat"])["stage_param.dat"])
 
-    # Extract names and remove duplicates
+    # Extract names, flatten lists and remove duplicates
     extractedStageNames = [util.getNamesFromStageTEMP(datData=stageParam, search=b"\x64\x64", includes=0)
                              for stageParam in stageParams]
     extractedPreviewNames = [util.getNamesFromStageTEMP(datData=stageParam, search=b"_sample", includes=7)
                              for stageParam in stageParams]
-    extractedStageNames = list(dict.fromkeys(extractedStageNames))
-    extractedPreviewNames = list(dict.fromkeys(extractedPreviewNames))
+    extractedStageNames = [name for namesList in extractedStageNames for name in namesList]
+    extractedPreviewNames = [name for namesList in extractedPreviewNames for name in namesList]
 
     # Yes i know i could just re-use code from downloadPreviews() and downloadChartdata()
     # But we would only be able to send loose stageParamData files so we go over the same
@@ -45,7 +45,7 @@ def downloadRecursive():
 
 # Downloads pre-bruteforced paks from server
 def downloadOldPaks():
-    [util.downloadIfNotExists(util.pakUrl % oldPakName, bruteforce=False)
+    [util.downloadIfNotExists(util.pakUrl % oldPakName, bruteForce=False)
      for oldPakName in util.oldPakNames]
 
 # Downloads all updated chart data
