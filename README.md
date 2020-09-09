@@ -9,11 +9,11 @@ after that you can start but if you want to start it faster you can do
 ```batch
 python start.py
 ```
-or if you for example want to use mode 1
+or if you for example want to do mode 1 and 2 you can do:
 ```batch
-python start.py 1
+python start.py 12
 ```
-and achieve server files yes. 
+and achieve server files yes.
 
 **What does it download:**
 
@@ -31,5 +31,10 @@ and achieve server files yes.
 All .zip files are encrypted by default with **`eiprblFFv69R83J5`**, i don't want to alter the data.
 If you forget it somehow, you can find it again in util.ZIP_PASSWORD
 
+for hardcore archivists i recommend:
+```batch
+python start.py 1234
+```
+since that downloads everything this program can download (about 8.55 GB as of 2020/09/09)
 
 Disclaimer, colored command prompt thumbnail may or may not be photoshopped.
