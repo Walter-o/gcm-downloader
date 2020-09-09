@@ -1,7 +1,7 @@
 # gcm-downloader
 **Groove coaster mobile server downloader**
 
-![Thumbnail](https://user-images.githubusercontent.com/33218378/92287708-d7f39e00-ef0a-11ea-9960-5b3a019a0542.PNG)
+![photoshopped](https://user-images.githubusercontent.com/33218378/92583339-7af14280-f292-11ea-83a0-dfd2f57b48ca.png)
 
 yes, to run this you need to have python 3 installed and 
 install dependencies by double-clicking `start.bat`
@@ -26,11 +26,10 @@ and achieve server files yes.
 - Titles (The title-cards you can select as a player)
 - All .pak files (It contains a bruteforced list of all links up until 2020/09/09)
 
-**What it can't do yet:**
-
-- Act as a proxy and save all files that come in
-
 **Bro what is the password:**
 
 All .zip files are encrypted by default with **`eiprblFFv69R83J5`**, i don't want to alter the data.
 If you forget it somehow, you can find it again in util.ZIP_PASSWORD
+
+
+Disclaimer, colored command prompt thumbnail may or may not be photoshopped.
