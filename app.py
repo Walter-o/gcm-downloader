@@ -15,11 +15,38 @@ def downloadNewPaks(soup):
 
 # Scans every tuneFile.pak and chart file present in data folder for more data, yes
 def downloadRecursive():
-    pass
+    # Obtain list of absolute paths to all our tuneFile.paks
+    paksDirectory = os.path.join(util.absPath, "data", "ios/gc2")
+    tuneFilePaks = [os.path.join(paksDirectory, filename)
+        for filename in os.listdir(paksDirectory)
+        if filename.startswith("tuneFile") and filename.endswith(".pak")]
+
+    # for each: Open pak, get stageparam.dat, close file
+    stageParams = []
+    for tuneFilePak in tuneFilePaks:
+        with open(tuneFilePak, "rb") as tuneFileData:
+            stageParams.append(util.decryptPak(pakFile=tuneFileData.read(), onlyFiles=["stage_param.dat"])["stage_param.dat"])
+
+    # Extract names and remove duplicates
+    extractedStageNames = [util.getNamesFromStageTEMP(datData=stageParam, search=b"\x64\x64", includes=0)
+                             for stageParam in stageParams]
+    extractedPreviewNames = [util.getNamesFromStageTEMP(datData=stageParam, search=b"_sample", includes=7)
+                             for stageParam in stageParams]
+    extractedStageNames = list(dict.fromkeys(extractedStageNames))
+    extractedPreviewNames = list(dict.fromkeys(extractedPreviewNames))
+
+    # Yes i know i could just re-use code from downloadPreviews() and downloadChartdata()
+    # But we would only be able to send loose stageParamData files so we go over the same
+    # files many times which is inefficient, i don't want to rewrite it either. this is ok
+    [util.downloadIfNotExists(util.sampleUrl % previewName, bruteForce=False)
+     for previewName in extractedPreviewNames]
+    [util.downloadIfNotExists(util.stageUrl % stageName, bruteForce=False)
+     for stageName in extractedStageNames]
 
 # Downloads pre-bruteforced paks from server
 def downloadOldPaks():
-    pass
+    [util.downloadIfNotExists(util.pakUrl % oldPakName, bruteforce=False)
+     for oldPakName in util.oldPakNames]
 
 # Downloads all updated chart data
 def downloadChartUpdateData(soup):
@@ -69,7 +96,6 @@ def downloadTitles():
     with multiprocessing.Pool(processes=50) as pool:
         pool.map(util.downloadIfNotExists, titleUrls)
 
-
 # Downloads all advertisement banner images
 def downloadAds():
     dates = util.dateRange(2015, util.datetime.now().year)
@@ -94,7 +120,7 @@ def main(mode):
     stageParamData = util.openStageParam(soup=soup)
 
     if "0" in mode:
-        downloadAds()
+        downloadOldPaks()
     if "1" in mode:
         downloadPreviews(stageParamData=stageParamData)
         downloadChartData(stageParamData=stageParamData)
@@ -116,8 +142,8 @@ def CLI():
     print("Hello! What would you like to do")
     print("1 = Just download all gameplay files we're missing")
     print("2 = Bruteforce title cards and ad banners")
-    #print("3 = Download many old pak files")
-    #print("4 = Scanning every old pak file in /data/ for downloads")
+    print("3 = Download many old pak files")
+    print("4 = Scanning every old pak file in /data/ for downloads")
     while True:
         choice = input("> ")
         if choice.isdigit():
