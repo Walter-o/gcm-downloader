@@ -24,10 +24,11 @@ and achieve server files yes.
 - .m4a previews (Basically the preview songs you'd hear ingame before purchasing a song)
 - Ads (The ad banners you can see at login page and in store)
 - Titles (The title-cards you can select as a player)
+- All .pak files (It contains a bruteforced list of all links up until 2020/09/09)
 
-**What it can't download yet:**
+**What it can't do yet:**
 
-- All .pak files (9.3 million possible urls, i'll add a list of valid urls in this program once i am done bruteforcing)
+- Act as a proxy and save all files that come in
 
 **Bro what is the password:**
 
