@@ -30,7 +30,10 @@ baseParams = {
     "vid": "65a2f74c649b4e8c85f1f43273f287cd2f1b46a3d2474050a37f0b81cd847241",
     "sid": "d143d4873dd9b987722c94560c13e4599a52c43de6c4658135d2b5737c718d9a",
     "lang": "en",
-    "ver": "2.0.10"
+    # "ver": "2.0.10",
+    #  Compromise has been made here, this version below does not exist but will avoid "version outdated" errors
+    #  If you want to be incognito then you can replace it with the current real version id
+    "ver": "9.0.10",
 }
 
 startUrl = "http://gc2018.gczero.com/start.php"
