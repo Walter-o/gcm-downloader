@@ -249,7 +249,7 @@ def download(url, bruteForce=True):
             return
         else:
             print("FAIL", r.status_code)
-            return download(url)
+            return
     except Exception as error:
         print("Error at download(%s): %s" % (url, error))
         return download(url)
